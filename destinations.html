@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Destinations — Korstrada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #EFF4F9; --sand: #D6E4F0; --terracotta: #2E6FA3;
+      --terra-light: #5291C0; --brown: #1A4A72; --dark: #0D2B45;
+      --muted: #6A8EAA; --white: #F6FAFD; --shadow: rgba(13,43,69,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 64px;
+      background: rgba(239,244,249,0.9); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(46,111,163,0.12);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; color: var(--brown); letter-spacing: 0.04em; text-decoration: none; }
+    .nav-logo span { color: var(--terracotta); font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 0.88rem; font-weight: 500; color: var(--muted); letter-spacing: 0.03em; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--terracotta); }
+    .nav-cta { background: var(--terracotta); color: var(--white); border: none; border-radius: 8px; padding: 0.55rem 1.3rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .nav-cta:hover { background: var(--brown); transform: translateY(-1px); }
+
+    /* PAGE HERO */
+    .page-hero {
+      min-height: 56vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 100px 2rem 5rem; text-align: center; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, var(--dark) 0%, #0a3558 60%, #0f2f4a 100%);
+    }
+    .page-hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(82,145,192,0.22), transparent 65%); pointer-events: none; }
+    .page-hero::after { content: ''; position: absolute; bottom: -100px; left: -60px; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(46,111,163,0.18), transparent 65%); pointer-events: none; }
+    .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 1.2rem; animation: fadeUp 0.5s ease both; }
+    .breadcrumb a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--terra-light); }
+    .breadcrumb .sep { color: rgba(255,255,255,0.25); }
+    .breadcrumb .cur { color: var(--terra-light); }
+    .page-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 6.5vw, 5.2rem); font-weight: 500; line-height: 1.1; color: var(--white); animation: fadeUp 0.6s 0.1s ease both; }
+    .page-hero h1 em { color: #7BB8DC; font-style: italic; }
+    .page-hero p { margin-top: 1.2rem; color: rgba(255,255,255,0.58); font-size: 1.05rem; line-height: 1.65; max-width: 500px; animation: fadeUp 0.6s 0.2s ease both; }
+
+    /* CONTINENT TABS */
+    .tabs-wrap { background: var(--white); border-bottom: 1px solid var(--sand); position: sticky; top: 64px; z-index: 50; }
+    .tabs { max-width: 1180px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { padding: 1.1rem 1.6rem; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; color: var(--muted); cursor: pointer; white-space: nowrap; border-bottom: 2.5px solid transparent; transition: color 0.2s, border-color 0.2s; }
+    .tab-btn:hover { color: var(--terracotta); }
+    .tab-btn.active { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+
+    /* FEATURED GRID */
+    .featured-dest { max-width: 1180px; margin: 4rem auto 0; padding: 0 2rem; }
+    .featured-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; min-height: 480px; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 40px var(--shadow); }
+    .featured-main { position: relative; overflow: hidden; cursor: pointer; }
+    .featured-main img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .featured-main:hover img { transform: scale(1.04); }
+    .feat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,43,69,0.78) 0%, transparent 55%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.5rem; }
+    .dest-tag { display: inline-block; background: var(--terracotta); color: var(--white); border-radius: 99px; padding: 0.25rem 0.9rem; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.8rem; width: fit-content; }
+    .feat-overlay h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 500; color: var(--white); line-height: 1.15; }
+    .feat-overlay p { color: rgba(255,255,255,0.68); margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.5; }
+    .dest-meta { display: flex; gap: 1.2rem; margin-top: 1rem; flex-wrap: wrap; }
+    .dest-meta-item { font-size: 0.8rem; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 0.3rem; }
+    .featured-side { display: flex; flex-direction: column; gap: 0; }
+    .side-card { flex: 1; position: relative; overflow: hidden; cursor: pointer; }
+    .side-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; display: block; }
+    .side-card:hover img { transform: scale(1.05); }
+    .side-card .feat-overlay { padding: 1.5rem; }
+    .side-card .feat-overlay h2 { font-size: 1.6rem; }
+    .side-card + .side-card { border-top: 2px solid rgba(255,255,255,0.1); }
+
+    /* SECTION */
+    .section { padding: 5rem 2rem; }
+    .container { max-width: 1180px; margin: 0 auto; }
+    .section-header { margin-bottom: 2.5rem; }
+    .section-eyebrow { display: block; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 0.6rem; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 500; color: var(--dark); }
+    .section-title em { color: var(--terracotta); font-style: italic; }
+
+    /* DEST GRID */
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .dest-card { border-radius: 18px; overflow: hidden; box-shadow: 0 4px 20px var(--shadow); cursor: pointer; transition: transform 0.25s, box-shadow 0.25s; background: var(--white); }
+    .dest-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(13,43,69,0.18); }
+    .dest-card:hover .dci { transform: scale(1.06); }
+    .dest-img-wrap { height: 200px; overflow: hidden; position: relative; }
+    .dci { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
+    .dest-count { position: absolute; bottom: 10px; right: 10px; background: rgba(13,43,69,0.75); backdrop-filter: blur(4px); color: var(--white); border-radius: 99px; padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 500; }
+    .dest-body { padding: 1.1rem 1.3rem 1.3rem; }
+    .dest-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--dark); margin-bottom: 0.3rem; }
+    .dest-country { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
+    .dest-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .chip { background: var(--sand); border-radius: 6px; padding: 0.18rem 0.55rem; font-size: 0.7rem; color: var(--brown); }
+    .dest-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--sand); }
+    .dest-price { font-size: 0.82rem; color: var(--muted); }
+    .dest-price strong { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600; color: var(--terracotta); }
+    .dest-link { font-size: 0.82rem; font-weight: 500; color: var(--terracotta); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: gap 0.2s; }
+    .dest-link:hover { gap: 0.6rem; }
+
+    /* CLIMATE */
+    .climate-section { background: var(--white); }
+    .climate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.2rem; }
+    .climate-card { background: var(--cream); border-radius: 16px; padding: 1.5rem; border: 1.5px solid var(--sand); transition: border-color 0.2s, transform 0.2s; }
+    .climate-card:hover { border-color: var(--terracotta); transform: translateY(-3px); }
+    .climate-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .climate-month { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600; color: var(--dark); margin-bottom: 0.3rem; }
+    .climate-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.5; }
+    .climate-picks { margin-top: 0.8rem; font-size: 0.78rem; color: var(--terracotta); font-weight: 500; }
+
+    /* TIPS */
+    .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .tip-card { display: flex; gap: 1.2rem; align-items: flex-start; background: var(--white); border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px var(--shadow); }
+    .tip-icon { width: 48px; height: 48px; border-radius: 14px; background: rgba(46,111,163,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .tip-title { font-weight: 500; color: var(--dark); margin-bottom: 0.3rem; }
+    .tip-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.55; }
+
+    /* NEWSLETTER */
+    .nl-wrap { background: linear-gradient(135deg, var(--brown) 0%, var(--dark) 100%); border-radius: 24px; padding: 4rem; text-align: center; position: relative; overflow: hidden; }
+    .nl-wrap::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: rgba(46,111,163,0.2); }
+    .nl-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 500; color: var(--white); margin-bottom: 0.8rem; position: relative; }
+    .nl-wrap p { color: rgba(255,255,255,0.58); font-size: 0.95rem; margin-bottom: 2rem; position: relative; }
+    .nl-form { display: flex; gap: 0.8rem; justify-content: center; max-width: 480px; margin: 0 auto; flex-wrap: wrap; position: relative; }
+    .nl-form input { flex: 1; min-width: 220px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 0.85rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--white); outline: none; transition: border-color 0.2s; }
+    .nl-form input::placeholder { color: rgba(255,255,255,0.38); }
+    .nl-form input:focus { border-color: var(--terra-light); }
+    .nl-form button { background: var(--terracotta); color: var(--white); border: none; border-radius: 10px; padding: 0.85rem 1.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(46,111,163,0.4); white-space: nowrap; }
+    .nl-form button:hover { background: var(--terra-light); transform: translateY(-1px); }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 3rem 2rem; text-align: center; }
+    footer .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; color: var(--white); margin-bottom: 0.5rem; }
+    footer .footer-logo span { color: var(--terra-light); font-style: italic; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 768px) {
+      .featured-grid { grid-template-columns: 1fr; }
+      .featured-side { flex-direction: row; min-height: 220px; }
+      nav { padding: 0 1.2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .nl-wrap { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Korstr<span>ada</span></a>
+  <ul class="nav-links">
+    <li><a href="properties.html">Properties</a></li>
+    <li><a href="destinations.html" class="active">Destinations</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location='properties.html'">Explore Stays</button>
+</nav>
+
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a><span class="sep"> › </span><span class="cur">Destinations</span>
+  </div>
+  <h1>Where Will You Go<br><em>Next?</em></h1>
+  <p>From misty mountain cabins to sun-soaked coastal villas — explore our hand-curated destinations around the world.</p>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" data-continent="all">All</button>
+    <button class="tab-btn" data-continent="europe">Europe</button>
+    <button class="tab-btn" data-continent="asia">Asia</button>
+    <button class="tab-btn" data-continent="americas">Americas</button>
+    <button class="tab-btn" data-continent="africa">Africa</button>
+    <button class="tab-btn" data-continent="oceania"> Oceania</button>
+  </div>
+</div>
+
+<!-- FEATURED -->
+<div class="featured-dest reveal">
+  <div class="featured-grid">
+    <div class="featured-main">
+      <img src="https://images.unsplash.com/photo-1499856871958-5b9357976b82?w=900&q=80" alt="Amalfi Coast" />
+      <div class="feat-overlay">
+        <div class="dest-tag">✦ Editor's Pick</div>
+        <h2>Amalfi Coast,<br>Italy</h2>
+        <p>Clifftop villages, cobalt waters, and lemon groves cascading down sun-drenched terraces.</p>
+        <div class="dest-meta">
+          <div class="dest-meta-item">🏠 34 properties</div>
+          <div class="dest-meta-item">⭐ 4.95 avg</div>
+          <div class="dest-meta-item">🌤 Best: May–Oct</div>
+        </div>
+      </div>
+    </div>
+    <div class="featured-side">
+      <div class="side-card">
+        <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=700&q=80" alt="Lapland" />
+        <div class="feat-overlay">
+          <div class="dest-tag">🌨 Winter Magic</div>
+          <h2>Lapland, Finland</h2>
+          <div class="dest-meta"><div class="dest-meta-item">🏠 18 properties</div></div>
+        </div>
+      </div>
+      <div class="side-card">
+        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&q=80" alt="Chamonix" />
+        <div class="feat-overlay">
+          <div class="dest-tag">⛰ Mountain Escape</div>
+          <h2>Swiss Alps, Switzerland</h2>
+          <div class="dest-meta"><div class="dest-meta-item">🏠 27 properties</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL DESTINATIONS -->
+<div class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">All Destinations</span>
+      <h2 class="section-title">Explore <em>Every Corner</em></h2>
+    </div>
+    <div class="dest-grid" id="dest-grid"></div>
+  </div>
+</div>
+
+<!-- BEST TIME -->
+<div class="section climate-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Travel Guide</span>
+      <h2 class="section-title">Best Time to <em>Visit</em></h2>
+    </div>
+    <div class="climate-grid">
+      <div class="climate-card reveal"><div class="climate-icon">☀️</div><div class="climate-month">Summer (Jun–Aug)</div><div class="climate-desc">Peak season across Europe and North America. Long days, warm water, and lively festivals.</div><div class="climate-picks">→ Amalfi Coast, Provence, Bali</div></div>
+      <div class="climate-card reveal"><div class="climate-icon">🍂</div><div class="climate-month">Autumn (Sep–Nov)</div><div class="climate-desc">Fewer crowds, golden foliage, and harvest season. Perfect for countryside and vineyard stays.</div><div class="climate-picks">→ Tuscany, Cotswolds, Kyoto</div></div>
+      <div class="climate-card reveal"><div class="climate-icon">❄️</div><div class="climate-month">Winter (Dec–Feb)</div><div class="climate-desc">Ski resorts peak, northern lights glow, and fireside retreats are at their best.</div><div class="climate-picks">→ Lapland, Chamonix, Dolomites</div></div>
+      <div class="climate-card reveal"><div class="climate-icon">🌸</div><div class="climate-month">Spring (Mar–May)</div><div class="climate-desc">Wildflowers bloom and shoulder-season prices offer incredible value before the summer rush.</div><div class="climate-picks">→ Lake District, Normandy, Algarve</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-eyebrow">Before You Go</span>
+      <h2 class="section-title">Insider <em>Tips</em></h2>
+    </div>
+    <div class="tips-grid">
+      <div class="tip-card reveal"><div class="tip-icon">📅</div><div><div class="tip-title">Book 6–8 Weeks Ahead</div><div class="tip-desc">Our most popular properties fill fast in peak season. Early booking unlocks the best rates and free early check-in at select locations.</div></div></div>
+      <div class="tip-card reveal"><div class="tip-icon">🗺️</div><div><div class="tip-title">Think Beyond the Hotspots</div><div class="tip-desc">Some of our most magical stays are 20–30 minutes from popular cities — quieter, cheaper, and often far more authentic.</div></div></div>
+      <div class="tip-card reveal"><div class="tip-icon">🌤️</div><div><div class="tip-title">Check Shoulder Seasons</div><div class="tip-desc">May, September, and October often offer the best mix of good weather, lower prices, and fewer fellow travellers.</div></div></div>
+      <div class="tip-card reveal"><div class="tip-icon">💬</div><div><div class="tip-title">Ask Your Host</div><div class="tip-desc">Every Korstrada host is a local expert. Message them before arrival for restaurant picks, hidden trails, and market days no guide lists.</div></div></div>
+      <div class="tip-card reveal"><div class="tip-icon">🛡️</div><div><div class="tip-title">Travel Insurance Matters</div><div class="tip-desc">All bookings include basic cancellation cover, but we recommend supplementary insurance for international trips over 5 nights.</div></div></div>
+      <div class="tip-card reveal"><div class="tip-icon">📦</div><div><div class="tip-title">Pack for the Property</div><div class="tip-desc">Check your property's amenity list — many remote cabins have limited nearby shops, so plan provisions for the first night.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="section" style="background: var(--white);">
+  <div class="container">
+    <div class="nl-wrap reveal">
+      <h2>Get Destination Inspiration</h2>
+      <p>New escapes, seasonal guides, and exclusive early access — straight to your inbox.</p>
+      <div class="nl-form">
+        <input type="email" placeholder="your@email.com" id="nl-email" />
+        <button onclick="subscribeNL()">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Korstr<span>ada</span></div>
+  <p style="margin-top:.3rem">© 2025 Korstrada. All rights reserved.</p>
+  <p style="margin-top:.5rem; font-size:.75rem;">Crafted with warmth ♥</p>
+</footer>
+
+<script>
+  const destinations = [
+    { id:1,  name:'Provence',       country:'France',       continent:'europe',   img:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',  props:22, price:195, tags:['Countryside','Lavender','Wine'] },
+    { id:2,  name:'Comporta',       country:'Portugal',     continent:'europe',   img:'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=600&q=80',  props:15, price:210, tags:['Beach','Surf','Dunes'] },
+    { id:3,  name:'Lake District',  country:'England',      continent:'europe',   img:'https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=600&q=80',  props:31, price:175, tags:['Lakes','Hiking','Cottage'] },
+    { id:4,  name:'Chamonix',       country:'France',       continent:'europe',   img:'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80',  props:19, price:390, tags:['Ski','Mountains','Spa'] },
+    { id:5,  name:'Kyoto',          country:'Japan',        continent:'asia',     img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',  props:11, price:245, tags:['Culture','Temple','Zen'] },
+    { id:6,  name:'Ubud',           country:'Bali',         continent:'asia',     img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80',  props:28, price:160, tags:['Jungle','Yoga','Rice Fields'] },
+    { id:7,  name:'Patagonia',      country:'Argentina',    continent:'americas', img:'https://images.unsplash.com/photo-1531761535209-180857e963b9?w=600&q=80',  props:8,  price:310, tags:['Wilderness','Hiking','Remote'] },
+    { id:8,  name:'Vermont',        country:'USA',          continent:'americas', img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',  props:24, price:220, tags:['Fall Foliage','Cabin','Ski'] },
+    { id:9,  name:'Zanzibar',       country:'Tanzania',     continent:'africa',   img:'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80',  props:12, price:285, tags:['Beach','Reef','Spice'] },
+    { id:10, name:'Cape Winelands', country:'South Africa', continent:'africa',   img:'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&q=80',  props:17, price:190, tags:['Wine','Mountains','Safari'] },
+    { id:11, name:'Byron Bay',      country:'Australia',    continent:'oceania',  img:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80',  props:20, price:265, tags:['Beach','Surf','Wellness'] },
+    { id:12, name:'Queenstown',     country:'New Zealand',  continent:'oceania',  img:'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80',  props:16, price:295, tags:['Adventure','Fjords','Ski'] }
+  ];
+
+  let activeContinent = 'all';
+
+  function renderDests() {
+    const grid = document.getElementById('dest-grid');
+    const filtered = activeContinent === 'all' ? destinations : destinations.filter(d => d.continent === activeContinent);
+    grid.innerHTML = filtered.map(d => `
+      <div class="dest-card reveal" onclick="window.location='properties.html'">
+        <div class="dest-img-wrap">
+          <img class="dci" src="${d.img}" alt="${d.name}" loading="lazy" />
+          <div class="dest-count">${d.props} stays</div>
+        </div>
+        <div class="dest-body">
+          <div class="dest-name">${d.name}</div>
+          <div class="dest-country">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${d.country}
+          </div>
+          <div class="dest-chips">${d.tags.map(t => `<span class="chip">${t}</span>`).join('')}</div>
+          <div class="dest-foot">
+            <div class="dest-price">From <strong>$${d.price}</strong>/night</div>
+            <a href="properties.html" class="dest-link">Explore →</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    observeReveal();
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeContinent = btn.dataset.continent;
+      renderDests();
+    });
+  });
+
+  function subscribeNL() {
+    const v = document.getElementById('nl-email').value;
+    if (!v) return;
+    alert('🎉 You\'re subscribed! Expect wanderlust in your inbox soon.');
+    document.getElementById('nl-email').value = '';
+  }
+
+  function observeReveal() {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 70); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+  }
+
+  renderDests();
+  observeReveal();
+</script>
+</body>
+</html>

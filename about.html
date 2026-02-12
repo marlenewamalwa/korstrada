@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — Korstrada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #EFF4F9;
+      --sand:     #D6E4F0;
+      --terracotta: #2E6FA3;
+      --terra-light: #5291C0;
+      --brown:    #1A4A72;
+      --dark:     #0D2B45;
+      --muted:    #6A8EAA;
+      --white:    #F6FAFD;
+      --shadow:   rgba(13,43,69,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 64px;
+      background: rgba(239,244,249,0.95); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(46,111,163,0.12);
+    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; color: var(--brown); letter-spacing: 0.04em; text-decoration: none; }
+    .nav-logo span { color: var(--terracotta); font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: 0.88rem; font-weight: 500; color: var(--muted); letter-spacing: 0.03em; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--terracotta); }
+    .nav-cta { background: var(--terracotta); color: var(--white); border: none; border-radius: 8px; padding: 0.55rem 1.3rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .nav-cta:hover { background: var(--brown); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 2rem 4rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse 70% 50% at 60% 40%, rgba(46,111,163,0.1) 0%, transparent 70%),
+        var(--cream);
+    }
+
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(46,111,163,0.12);
+      color: var(--terracotta);
+      border: 1px solid rgba(46,111,163,0.3);
+      border-radius: 99px;
+      padding: 0.3rem 1rem;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--dark);
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 em { color: var(--terracotta); font-style: italic; }
+
+    .hero-sub {
+      font-size: 1.1rem; color: var(--muted);
+      line-height: 1.7;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-eyebrow {
+      display: inline-block; font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--terracotta); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 500;
+      color: var(--dark); line-height: 1.2;
+    }
+    .section-title em { color: var(--terracotta); font-style: italic; }
+
+    /* ── STORY SECTION ── */
+    .story-section { background: var(--white); }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .story-content p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .story-content p:first-of-type {
+      font-size: 1.15rem;
+      color: var(--dark);
+      font-weight: 400;
+    }
+
+    .story-img {
+      width: 100%;
+      height: 450px;
+      border-radius: 20px;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 12px 48px var(--shadow);
+    }
+
+    /* ── VALUES ── */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .value-card {
+      text-align: center;
+      padding: 2rem;
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .value-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(46,111,163,0.18);
+    }
+
+    .value-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.2rem;
+      background: rgba(46,111,163,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .value-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.8rem;
+    }
+
+    .value-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* ── STATS ── */
+    .stats-section {
+      background: linear-gradient(135deg, var(--brown) 0%, var(--dark) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(46,111,163,0.15);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── TEAM ── */
+    .team-section { background: var(--white); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .team-member {
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .team-member:hover {
+      transform: translateY(-6px);
+    }
+
+    .team-photo {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 1.2rem;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 4px solid var(--sand);
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+
+    .team-member h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+    }
+
+    .team-role {
+      font-size: 0.85rem;
+      color: var(--terracotta);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .team-bio {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--terracotta) 0%, var(--terra-light) 100%);
+      border-radius: 24px;
+      padding: 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .cta-banner h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-banner p {
+      color: rgba(255,255,255,0.85);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-btn {
+      background: var(--white);
+      color: var(--terracotta);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    footer .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    footer .footer-logo span { color: var(--terra-light); font-style: italic; }
+    footer p { font-size: 0.82rem; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1.2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .story-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .story-img { height: 350px; }
+      .stats-grid { gap: 2rem; }
+      .cta-banner { padding: 2.5rem 1.5rem; }
+      section { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="index.html">Korstr<span>ada</span></a>
+  <ul class="nav-links">
+    <li><a href="properties.html">Properties</a></li>
+    <li><a href="index.html">Destinations</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location='properties.html'">Explore Stays</button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">✦ Est. 2019</div>
+    <h1>Where Every Stay<br>Tells a <em>Story</em></h1>
+    <p class="hero-sub">We believe the best vacations happen in places that feel like home — only better. Korstrada curates unforgettable stays that blend comfort, character, and connection.</p>
+  </div>
+</section>
+
+<!-- ── STORY ── -->
+<section class="story-section">
+  <div class="container">
+    <div class="story-grid reveal">
+      <div class="story-content">
+        <div class="section-eyebrow">Our Story</div>
+        <h2 class="section-title">Born from a Love<br>of <em>Travel</em></h2>
+        <p>Korstrada began with a simple observation: the most memorable trips weren't always at five-star resorts. They were in cozy cottages, converted farmhouses, and hidden coastal retreats where you felt truly at ease.</p>
+        <p>Founded in 2019 by travel enthusiasts who grew tired of generic accommodations, we set out to create something different — a collection of handpicked properties where comfort meets character, and every detail is considered.</p>
+        <p>Today, we work with property owners who share our passion for hospitality, ensuring every home in our collection offers not just a place to sleep, but an experience to remember.</p>
+      </div>
+      <div class="story-img" style="background-image: url('https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80')"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VALUES ── -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">What We Believe</div>
+      <h2 class="section-title">Our <em>Values</em></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card reveal">
+        <div class="value-icon">🏡</div>
+        <h3>Curated Quality</h3>
+        <p>Every property is personally inspected and vetted to meet our standards for comfort, cleanliness, and character.</p>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-icon">❤️</div>
+        <h3>Genuine Care</h3>
+        <p>We treat every guest like family, ensuring you have everything you need for a memorable and stress-free stay.</p>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-icon">🌍</div>
+        <h3>Local Connection</h3>
+        <p>We partner with property owners who are deeply rooted in their communities, offering authentic local experiences.</p>
+      </div>
+      <div class="value-card reveal">
+        <div class="value-icon">✨</div>
+        <h3>Thoughtful Design</h3>
+        <p>From rustic cottages to modern escapes, we celebrate spaces that are beautifully designed and lovingly maintained.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid reveal">
+      <div class="stat-item">
+        <div class="stat-num">1,200+</div>
+        <div class="stat-label">Curated Properties</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">48</div>
+        <div class="stat-label">Countries Worldwide</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50K+</div>
+        <div class="stat-label">Happy Guests</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TEAM ── -->
+<section class="team-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">Meet The Team</div>
+      <h2 class="section-title">The People Behind<br>Your <em>Experience</em></h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-member reveal">
+        <div class="team-photo" style="background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80')"></div>
+        <h3>Elena Korstova</h3>
+        <div class="team-role">Founder & CEO</div>
+        <p class="team-bio">Traveled to 60+ countries before founding Korstrada. Passionate about creating authentic travel experiences.</p>
+      </div>
+      <div class="team-member reveal">
+        <div class="team-photo" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80')"></div>
+        <h3>Sofia Ramirez</h3>
+        <div class="team-role">Head of Curation</div>
+        <p class="team-bio">Former hospitality director with 15 years of experience in luxury accommodations and interior design.</p>
+      </div>
+      <div class="team-member reveal">
+        <div class="team-photo" style="background-image: url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80')"></div>
+        <h3>Marcus Chen</h3>
+        <div class="team-role">Guest Experience Lead</div>
+        <p class="team-bio">Dedicated to ensuring every guest feels welcomed, supported, and delighted throughout their stay.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA BANNER ── -->
+<section>
+  <div class="container">
+    <div class="cta-banner reveal">
+      <h3>Ready to Start Your Journey?</h3>
+      <p>Browse our collection of handpicked properties and discover your perfect getaway today.</p>
+      <button class="cta-btn" onclick="window.location='properties.html'">Explore Properties</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Korstr<span>ada</span></div>
+  <p style="margin-top:.3rem">© 2025 Korstrada. All rights reserved.</p>
+  <p style="margin-top:.5rem; font-size:.75rem;">Crafted with warmth ♥</p>
+</footer>
+
+<script>
+  /* ─── REVEAL ON SCROLL ─── */
+  function observeReveal() {
+    const els = document.querySelectorAll('.reveal:not(.visible)');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => obs.observe(el));
+  }
+
+  /* ─── INIT ─── */
+  observeReveal();
+</script>
+
+</body>
+</html>
